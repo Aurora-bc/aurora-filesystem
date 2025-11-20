@@ -1,9 +1,10 @@
 package db
 
 import (
-	mab "../db/mysql"
 	"fmt"
 	"time"
+
+	mab "github.com/Aurora-bc/aurora-filesystem/db/mysql"
 )
 
 // UserFile : 用户文件表结构体

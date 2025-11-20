@@ -1,8 +1,9 @@
 package db
 
 import (
-	mab "../db/mysql"
 	"fmt"
+
+	mab "github.com/Aurora-bc/aurora-filesystem/db/mysql"
 )
 
 // User : 用户表model
@@ -10,8 +11,8 @@ type User struct {
 	Username     string
 	Email        string
 	Phone        string
-	SignupAt     string		//注册时间
-	LastActiveAt string		//最后活跃时间
+	SignupAt     string //注册时间
+	LastActiveAt string //最后活跃时间
 	Status       int
 }
 

@@ -1,9 +1,10 @@
 package main
 
 import (
-	"FileSystem/handler"
 	"fmt"
 	"net/http"
+
+	"github.com/Aurora-bc/aurora-filesystem/handler"
 )
 
 func main() {

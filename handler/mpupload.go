@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"../utils"
 	"fmt"
 	"math"
 	"net/http"
@@ -11,10 +10,12 @@ import (
 	"strings"
 	"time"
 
+	util "github.com/Aurora-bc/aurora-filesystem/utils"
+
 	"github.com/garyburd/redigo/redis"
 
-	rPool "../cache/redis"
-	dblayer "../db"
+	rPool "github.com/Aurora-bc/aurora-filesystem/cache/redis"
+	dblayer "github.com/Aurora-bc/aurora-filesystem/db"
 )
 
 // MultipartUploadInfo : 初始化信息

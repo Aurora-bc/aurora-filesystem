@@ -1,9 +1,6 @@
 package handler
 
 import (
-	darer "../db"
-	"../meta"
-	"../utils"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -13,9 +10,13 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	darer "github.com/Aurora-bc/aurora-filesystem/db"
+	"github.com/Aurora-bc/aurora-filesystem/meta"
+	util "github.com/Aurora-bc/aurora-filesystem/utils"
 )
 
-//上传文件处理器
+// 上传文件处理器
 func UpLoadHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		//返回上传的Html页面
@@ -67,8 +68,8 @@ func UpLoadHandler(w http.ResponseWriter, r *http.Request) {
 
 		//更新用户文件表记录
 		r.ParseForm()
-		username:=r.Form.Get("username")
-		suc:= darer.OnUserFileUploadFinished(username,fileMeta.FileSha1,fileMeta.FileName,fileMeta.FileSize)
+		username := r.Form.Get("username")
+		suc := darer.OnUserFileUploadFinished(username, fileMeta.FileSha1, fileMeta.FileName, fileMeta.FileSize)
 		if suc {
 			http.Redirect(w, r, "/static/view/home.html", http.StatusFound)
 		} else {
@@ -80,18 +81,18 @@ func UpLoadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-//上传文件成功提示页面处理器
+// 上传文件成功提示页面处理器
 func UpLoadSuccessHandler(w http.ResponseWriter, r *http.Request) {
 	io.WriteString(w, "文件上传成功！")
 }
 
-//获取文件元信息
+// 获取文件元信息
 func GetFileMetaHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	filehash := r.Form["filehash"][0]
 	//fMeta := meta.GetFileMeta(filehash)
-	fMeta,err:=meta.GetFileMetaDB(filehash)
-	if err != nil{
+	fMeta, err := meta.GetFileMetaDB(filehash)
+	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -105,15 +106,15 @@ func GetFileMetaHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 }
 
-//查询批量文件元信息
+// 查询批量文件元信息
 func FileQueryHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	limitCut, _ := strconv.Atoi(r.Form.Get("limit"))
 
 	//fileMetas := meta.GetLastFileMetas(limitCut)
-	username:=r.Form.Get("username")
-	userFiles,err:= darer.QueryUserFileMetas(username,limitCut)
-	if err != nil{
+	username := r.Form.Get("username")
+	userFiles, err := darer.QueryUserFileMetas(username, limitCut)
+	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -126,15 +127,15 @@ func FileQueryHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 }
 
-//下载文件逻辑
+// 下载文件逻辑
 func DownloadHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	fsha1 := r.Form.Get("filehash")
 	//fm := meta.GetFileMeta(fsha1)
 
-	fm,err:=meta.GetFileMetaDB(fsha1)
-	if err !=nil{
-		fmt.Println("下载出错了,错误是："+err.Error())
+	fm, err := meta.GetFileMetaDB(fsha1)
+	if err != nil {
+		fmt.Println("下载出错了,错误是：" + err.Error())
 		return
 	}
 
@@ -159,7 +160,7 @@ func DownloadHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 }
 
-//FileMetaUpdateHandler:更新文件元信息接口（重命名）
+// FileMetaUpdateHandler:更新文件元信息接口（重命名）
 func FileMetaUpdateHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	opType := r.Form.Get("op")
@@ -181,8 +182,8 @@ func FileMetaUpdateHandler(w http.ResponseWriter, r *http.Request) {
 	//查找fileSha1对应的文件，改名字，并保存到当前的文件元信息结构体中
 	//curFileMeta := meta.GetFileMeta(fileSha1)
 
-	curFileMeta,err:=meta.GetFileMetaDB(fileSha1)
-	if err!=nil{
+	curFileMeta, err := meta.GetFileMetaDB(fileSha1)
+	if err != nil {
 		fmt.Println("出错了")
 		return
 	}
@@ -204,14 +205,14 @@ func FileMetaUpdateHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 }
 
-//FileDeleteHandler：删除文件元信息
+// FileDeleteHandler：删除文件元信息
 func FileDeleteHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	fileSha1 := r.Form.Get("filehash")
 	//获取到fileSha1的文件元信息
 	//fMeta := meta.GetFileMeta(fileSha1)
-	fMeta,err:=meta.GetFileMetaDB(fileSha1)
-	if err != nil{
+	fMeta, err := meta.GetFileMetaDB(fileSha1)
+	if err != nil {
 		fmt.Println("出错了")
 		return
 	}
@@ -221,10 +222,10 @@ func FileDeleteHandler(w http.ResponseWriter, r *http.Request) {
 	//在文件元结构体中删除fileSha1的文件元信息
 	//Bug 数据库中的地址没有删掉
 	//meta.RemoveFileMeta(fileSha1)
-	suc:=meta.RemoveFileMetaDB(fileSha1)
-	if suc{
+	suc := meta.RemoveFileMetaDB(fileSha1)
+	if suc {
 		w.Write([]byte("删除成功"))
-	}else{
+	} else {
 		w.Write([]byte("删除失败"))
 	}
 	//给客户端返回正常的状态信息

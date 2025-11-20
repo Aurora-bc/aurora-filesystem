@@ -1,11 +1,12 @@
 package meta
 
 import (
-	mab "../db"
 	"sort"
+
+	mab "github.com/Aurora-bc/aurora-filesystem/db"
 )
 
-//文件元信息结构
+// 文件元信息结构
 type FileMeta struct {
 	//文件Hash值
 	FileSha1 string
@@ -19,10 +20,10 @@ type FileMeta struct {
 	UploadAt string
 }
 
-//定义全局变量
+// 定义全局变量
 var fileMetas map[string]FileMeta
 
-//初始化
+// 初始化
 func init() {
 	fileMetas = make(map[string]FileMeta)
 }
@@ -37,7 +38,7 @@ func RemoveFileMeta(fileSha1 string) {
 	delete(fileMetas, fileSha1)
 }
 
-func RemoveFileMetaDB(fileSha1 string) bool{
+func RemoveFileMetaDB(fileSha1 string) bool {
 	return mab.OnFileDeleteUserFileFinished(fileSha1)
 }
 
